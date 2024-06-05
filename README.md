@@ -1,118 +1,110 @@
-## Howler: A Nextcord Command Handler
 
-Howler is a versatile Discord.py command handler designed to add wolf-themed functionality to your bot. It allows you to interact with users through commands and events related to wolves.
+## Howler: Unleash the Howling Power in Your Discord Pack!
 
-### Features
+Howler is a mighty Discord.py command handler, built with the spirit of the wolf in mind. It empowers you to create a thrilling, wolf-themed experience for your Discord server. Howler lets you interact with your pack through commands and events that celebrate all things wolf!
 
-* **Modular Design:** Howler is built with modularity in mind, making it easy to extend with new functionalities.
-* **Customizable:** You can easily configure Howler to respond to specific commands and events.
+### Howling Features:
 
-### Installation
+* **Modular by Pack:** Howler boasts a modular design, allowing you to effortlessly expand its features. Craft new functionalities to suit your pack's needs, keeping your server a constantly exciting hunting ground. 
+* **Customizable Howls:** Make Howler truly your own! Configure it to respond to unique commands and events, creating a personalized experience for your pack members.
 
-1. **Clone the Repository:**
+### Howling into Action: Getting Started
+
+1. **Join the Pack:**
 
    ```bash
    git clone https://github.com/thatdevwolfy/howler
    ```
 
-2. **Install Dependencies:**
+2. **Gather Your Supplies:**
 
    Navigate to the project directory and install the required libraries using pip:
 
    ```bash
-   pip install nextcord 
+   pip install nextcord
    ```
 
-### Usage
+### Howling with Authority: Using Howler
 
-**1. Example:**
-```py
+**1. A Howling Example:**
+
+```python
 import nextcord
 from config import config
 from nextcord.ext import commands
 from Howler import Handler
-client = commands.Bot(command_prefix="(prefix)",intents=nextcord.Intents.all())
+
+# Set up your alpha bot
+client = commands.Bot(command_prefix="!", intents=nextcord.Intents.all())
 handler = Handler(client,
-                         commandFolder=config["handler"]["commandFolder"],
-                         eventFolder=config["handler"]["eventFolder"],
-                         useDefaultReadyEvent=config["handler"]["useDefaultOnReadyEvent"],
-                         presence=config["handler"]["presence"],
-                         status=config["handler"]["status"]
-                         )
+                  commandFolder=config["handler"]["commandFolder"],
+                  eventFolder=config["handler"]["eventFolder"],
+                  useDefaultReadyEvent=config["handler"]["useDefaultOnReadyEvent"],
+                  presence=config["handler"]["presence"],
+                  status=config["handler"]["status"])
+
+# Unleash the bot!
 client.run(config["token"])
 ```
 
-**3. Define Commands and Events:**
+**2. Craft Howling Commands and Events:**
 
-Howler allows you to define custom commands and event handlers. Here's a basic example:
+Howler lets you define custom commands and event handlers that resonate with your pack. Here's a basic example:
 
 ```python
 # commands/example_command.py
 from Howler import load_modules
 import nextcord
-async def help(ctx, filter=""):
-    commands = load_modules("commands")
-    embed = nextcord.Embed(title="Commands")
-    for i in commands:
-        if filter != "":
-            if i["name"] == filter:
-                embed.add_field(name=i["name"],value=i["description"])
-        else:
-            embed.add_field(name=i["name"],value=f'{i["description"]} - {i["aliases"] or ""}')
-    await ctx.reply(embed=embed)
 
+async def help(ctx, filter=""):
+  """Provides guidance on available commands for your pack."""
+  commands = load_modules("commands")
+  embed = nextcord.Embed(title="Pack Commands")
+  for command in commands:
+    if filter:
+      if command["name"] == filter:
+        embed.add_field(name=command["name"], value=command["description"])
+    else:
+      aliases = command.get("aliases", "")  # Handle optional aliases
+      embed.add_field(name=command["name"], value=f"{command['description']} - {aliases}")
+  await ctx.reply(embed=embed)
+
+# Register the command
 export = {
-    "name": "help",
-    "description": "get help",
+  "name": "help",
+  "description": "Get help with available commands for your pack.",
 }
 
 # events/on_ready.py
-import os
-
-
 async def on_ready():
-    print("Logged in.")
+  """Triggered when the bot is ready to howl."""
+  print(f"Logged in as {client.user} (ID: {client.user.id})")
 
+# Register the event
 export = {
-    "name": "on_ready",
-    "execution": on_ready
-}
-
-```
-
-
-**4. Load your config**
-
-```py
-import nextcord
-
-config = {
-    "handler": {
-        "commandFolder": "commands", # Folder your commands are in
-        "eventFolder": "events", # Folder your events are in
-        "useDefaultOnReadyEvent": True, # Change this to false if your using your own on_ready event,
-        "logfile": "logs", # Where the bot logs errors, command loading etc
-        "presence": nextcord.Status, # .dnd/.online/.afk/.offline
-        "status": nextcord.Game("With wolfhandler") # Set this to your status. Eg nextcord.watching/
-    },
-    "token": "" # Discord bot token (get it from https://discord.com/developers)
+  "name": "on_ready",
+  "execution": on_ready,
 }
 ```
-**5. Register Howler with the Client:**
+
+**3. Bind Howler to Your Alpha:**
 
 ```python
-
-client.run("your_bot_token")
+client.run("your_bot_token")  # Replace with your actual bot token
 ```
 
-### Extending Howler
+### Howling Beyond the Basics: Extending Howler
 
-Howler provides a foundation for building commands and events. You can create new modules or cogs to handle specific howling good interactions (e.g., games, image sharing, role management).
+Howler is the foundation for your howlin' good adventures. Create new modules or cogs for functionalities like:
 
-### Contributing
+* **Image Sharing:** Unleash the majesty of wolves with image sharing features. 
+* **Role Management:** Organize your pack with a robust role management system, like Alpha, Beta, Omega roles.
 
-We welcome contributions to improve Howler! Feel free to submit pull requests with new features, bug fixes, or improvements.
+### Join the Howling Chorus: Contributing to Howler
 
-### License
+We welcome all wolves who want to strengthen the pack! Feel free to submit pull requests for new features, bug fixes, or improvements. Let's make Howler the ultimate tool for a howling good time on Discord!
 
-Howler is licensed under the MIT License (see LICENSE file for details).
+### Howling Openly: License
+
+Howler is licensed under the MIT License (see LICENSE file for details). This allows for open collaboration and customization within your projects.
+```

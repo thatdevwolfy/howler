@@ -107,4 +107,3 @@ We welcome all wolves who want to strengthen the pack! Feel free to submit pull 
 ### Howling Openly: License
 
 Howler is licensed under the MIT License (see LICENSE file for details). This allows for open collaboration and customization within your projects.
-```

@@ -96,7 +96,8 @@ config = {
         "status": nextcord.Game("With wolfhandler") # Set this to your status. Eg nextcord.watching/
     },
     "token": "" # Discord bot token (get it from https://discord.com/developers)
-}```
+}
+```
 **5. Register Howler with the Client:**
 
 ```python

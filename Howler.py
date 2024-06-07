@@ -13,7 +13,8 @@ logo = """
 *██╔══██║██║   ██║██║███╗██║██║     ██╔══╝  ██╔══██╗*
 *██║  ██║╚██████╔╝╚███╔███╔╝███████╗███████╗██║  ██║*
 *╚═╝  ╚═╝ ╚═════╝  ╚══╝╚══╝ ╚══════╝╚══════╝╚═╝  ╚═╝*
-*****************************************************"""
+*****************************************************
+"""
 def load_modules(directory):
     for filename in os.listdir(directory):
         if filename.endswith(".py"):
@@ -30,6 +31,7 @@ class Handler:
     def __init__(self, client, commandFolder="commands", eventFolder="events",presence=nextcord.Status.dnd,status=nextcord.Game(name="github.com/thatdevwolfy/howler"),logfile="logs",useDefaultReadyEvent=True):
         self.client = client; self.presence = presence; self.status = status; self.logfile = logfile; self.eventFolder = eventFolder; self.commandFolder = commandFolder
         commandsThatErrored = []
+        loadedCommands = []
         if useDefaultReadyEvent == True:
             @client.event
             async def on_ready():
@@ -42,7 +44,7 @@ class Handler:
                 print(f"- Latency: {round(client.latency * 1000)}ms")
                 print(f"- Launch time: {str(round(startTime,0) - round(time.time(),0)).replace('-','')}s")
                 print("\nCommand Status:")
-                print(f"- Successfully Loaded: {len(client.commands)} commands")
+                print(f"- Successfully Loaded: {len(loadedCommands)} commands")
                 if commandsThatErrored:
                     print(f"- Failed to Load ({len(commandsThatErrored)}):")
                     for command in commandsThatErrored:
@@ -66,11 +68,12 @@ class Handler:
             try:
                 x = command["execution"]
             except:
-                print(f"Failed to load command: {command['name']}")
+                print(f"{error}\nFailed to load command: {command['name']}")
                 commandsThatErrored.append(command["name"])
                 self.raiseError(f"Failed to load {command['name']} as it doesnt have the execution function")
                 continue
-            client.remove_command("help")
+            if command["name"] == "help":
+                client.remove_command("help")
             try:
                 if command["aliases"]:
                     client.add_command(commands.Command(command["execution"], name=command["name"], description=command["description"],aliases=command["aliases"])) # Add command to bot with alliases
@@ -79,6 +82,7 @@ class Handler:
             else:
                 client.add_command(commands.Command(command["execution"], name=command["name"], description=command["description"])) # Add command to bot without alliases
                 self.raiseLog(f"Loaded {command['name']}")
+            loadedCommands.append(command["name"])
         self.client.loop.create_task(self.set_presence())
     async def set_presence(self):
         await self.client.wait_until_ready()

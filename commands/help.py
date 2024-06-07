@@ -15,4 +15,5 @@ async def help(ctx, filter=""):
 export = {
     "name": "help",
     "description": "get help",
+    "execution": help
 }

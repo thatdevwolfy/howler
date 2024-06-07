@@ -1,5 +1,10 @@
-import os, importlib.util, nextcord, datetime
+import os, importlib.util, nextcord, datetime, time, psutil, sys
 from nextcord.ext import commands
+startTime = time.time()
+def get_memory_usage():
+  """Gets the current memory usage of the Python process in MB."""
+  mem = psutil.Process().memory_info().rss / 1024**2  # Convert bytes to MB
+  return f"{mem:.2f} MB"
 logo = """
 *****************************************************
 *██╗  ██╗ ██████╗ ██╗    ██╗██╗     ███████╗██████╗ *
@@ -26,14 +31,27 @@ class Handler:
         self.client = client; self.presence = presence; self.status = status; self.logfile = logfile; self.eventFolder = eventFolder; self.commandFolder = commandFolder
         commandsThatErrored = []
         if useDefaultReadyEvent == True:
-            @self.client.event
-            async def on_ready(): # Default on_ready event if flag useDefaultReadyEvent is True
+            @client.event
+            async def on_ready():
+                """Enhanced on_ready event with informative output and logging."""
                 os.system("clear" if os.name != "nt" else "cls")
-                string = ""
-                for item in commandsThatErrored:
-                    string = f"{string}{item}"
-                print(f"""{logo}\nLogged in as {client.user}\nGuilds: {len(client.guilds)} \nCommands failed to load ({len(commandsThatErrored)}): {string}""")
-                self.raiseLog(f"{logo}\nLogged in as {client.user}")
+                print(f"{logo}\nClient Information:")
+                print(f"- Logged in as: {client.user} ({client.user.id})")
+                print(f"- Guilds: {len(client.guilds)}")
+                print(f"- Users: {len(client.users)}")  # Added User Count
+                print(f"- Latency: {round(client.latency * 1000)}ms")
+                print(f"- Launch time: {str(round(startTime,0) - round(time.time(),0)).replace('-','')}s")
+                print("\nCommand Status:")
+                print(f"- Successfully Loaded: {len(client.commands)} commands")
+                if commandsThatErrored:
+                    print(f"- Failed to Load ({len(commandsThatErrored)}):")
+                    for command in commandsThatErrored:
+                        print(f"  - {command}")  # More detailed error handling
+                else:
+                    print("- No errors encountered during command loading.")
+                print("\nAdditional Information:")
+                print(f"- Memory Usage: {get_memory_usage()}")
+        os.system("clear" if os.name != "nt" else "cls")
         print(f"{logo}")
         for event in load_modules(f'./{eventFolder}'):
             event_handler = event["execution"]
@@ -44,8 +62,7 @@ class Handler:
             print(f'Loading Event: {event["name"]}')
             self.raiseLog(f"Loaded {event['name']}")
             client.add_listener(event_handler, event["name"]) # Load Events
-        for command in load_modules(f'./{commandFolder}'):
-                
+        for command in load_modules(f'./{commandFolder}'):      
             try:
                 x = command["execution"]
             except:
@@ -53,9 +70,7 @@ class Handler:
                 commandsThatErrored.append(command["name"])
                 self.raiseError(f"Failed to load {command['name']} as it doesnt have the execution function")
                 continue
-            
-            if command["name"] == "help":
-                client.remove_command("help")
+            client.remove_command("help")
             try:
                 if command["aliases"]:
                     client.add_command(commands.Command(command["execution"], name=command["name"], description=command["description"],aliases=command["aliases"])) # Add command to bot with alliases

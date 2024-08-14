@@ -1,5 +1,3 @@
-How about this? It incorporates some action verbs and imagery to make it even more immersive:
-
 ## Howler: Awaken the Primal Howl Within Your Discord Pack!
 
 Howler is a ferocious Discord.py command handler, imbued with the ancient spirit of the wolf. It empowers you to forge a thrilling, moonlit realm within your Discord server, where your pack can gather, socialize, and celebrate the wild heart of the wolf!
